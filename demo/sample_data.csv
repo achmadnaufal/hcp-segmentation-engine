@@ -1,0 +1,21 @@
+hcp_id,name,specialty,city,region,prescriptions_last_12m,total_rx_value_usd,num_visits,digital_engagement_score,kol_flag,tier,segment
+HCP001,Dr. Sarah Mitchell,Cardiology,New York,Northeast,342,128500.00,8,87,1,1,High-Value KOL
+HCP002,Dr. James Okonkwo,Oncology,Houston,South,278,104200.00,6,72,1,1,High-Value KOL
+HCP003,Dr. Linda Chen,Neurology,Los Angeles,West,215,80750.00,5,65,0,2,Growth Target
+HCP004,Dr. Robert Patel,Primary Care,Chicago,Midwest,189,47250.00,7,58,0,2,Growth Target
+HCP005,Dr. Maria Gonzalez,Endocrinology,Miami,South,163,61125.00,4,79,0,2,Digital Adopter
+HCP006,Dr. Thomas Nguyen,Cardiology,Seattle,West,148,55500.00,3,82,0,2,Digital Adopter
+HCP007,Dr. Angela Brooks,Rheumatology,Boston,Northeast,132,49500.00,5,44,0,3,Standard
+HCP008,Dr. Kevin Walsh,Oncology,Philadelphia,Northeast,127,47625.00,4,51,0,3,Standard
+HCP009,Dr. Priya Sharma,Neurology,Phoenix,West,119,44625.00,3,68,0,3,Digital Adopter
+HCP010,Dr. Carlos Rivera,Primary Care,San Antonio,South,108,27000.00,6,39,0,3,Standard
+HCP011,Dr. Emily Foster,Endocrinology,San Diego,West,97,36375.00,2,74,0,3,Digital Adopter
+HCP012,Dr. Marcus Johnson,Cardiology,Dallas,South,89,33375.00,4,47,0,3,Standard
+HCP013,Dr. Rachel Kim,Rheumatology,San Jose,West,76,28500.00,2,61,0,4,Low Activity
+HCP014,Dr. Daniel Martinez,Oncology,Austin,South,68,25500.00,3,35,0,4,Low Activity
+HCP015,Dr. Sophie Anderson,Neurology,Jacksonville,South,57,21375.00,2,43,0,4,Low Activity
+HCP016,Dr. Brian Thompson,Primary Care,Columbus,Midwest,49,12250.00,4,28,0,4,Low Activity
+HCP017,Dr. Laura Wilson,Endocrinology,Charlotte,South,41,15375.00,1,55,0,4,Low Activity
+HCP018,Dr. Nathan Davis,Cardiology,Indianapolis,Midwest,34,12750.00,2,32,0,4,Low Activity
+HCP019,Dr. Olivia Harris,Rheumatology,Denver,West,22,8250.00,1,19,0,4,Dormant
+HCP020,Dr. Michael Lee,Primary Care,Portland,West,11,2750.00,1,12,0,4,Dormant
