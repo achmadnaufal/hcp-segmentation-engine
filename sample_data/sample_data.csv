@@ -1,0 +1,21 @@
+hcp_id,specialty,region,prescriptions_per_month,market_share,tier,engagement_score
+HCP001,Cardiology,Northeast,29,12.4,1,87
+HCP002,Oncology,South,23,9.8,1,72
+HCP003,Neurology,West,18,7.2,2,65
+HCP004,Primary Care,Midwest,16,5.1,2,58
+HCP005,Endocrinology,South,14,6.5,2,79
+HCP006,Cardiology,West,12,5.9,2,82
+HCP007,Rheumatology,Northeast,11,4.7,3,44
+HCP008,Oncology,Northeast,10,4.5,3,51
+HCP009,Neurology,West,10,4.2,3,68
+HCP010,Primary Care,South,9,2.9,3,39
+HCP011,Endocrinology,West,8,3.4,3,74
+HCP012,Cardiology,South,7,3.2,3,47
+HCP013,Rheumatology,West,6,2.7,4,61
+HCP014,Oncology,South,6,2.4,4,35
+HCP015,Neurology,South,5,2.0,4,43
+HCP016,Primary Care,Midwest,4,1.3,4,28
+HCP017,Endocrinology,South,3,1.5,4,55
+HCP018,Cardiology,Midwest,3,1.2,4,32
+HCP019,Rheumatology,West,2,0.8,4,19
+HCP020,Primary Care,West,1,0.3,4,12

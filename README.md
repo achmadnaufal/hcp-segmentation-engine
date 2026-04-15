@@ -1,40 +1,54 @@
+![Python](https://img.shields.io/badge/python-3.9%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Last Commit](https://img.shields.io/github/last-commit/achmadnaufal/hcp-segmentation-engine)
+
 # HCP Segmentation Engine
 
-Healthcare professional (HCP) segmentation and targeting engine for pharmaceutical sales teams.
+A Python-based segmentation and targeting engine that scores, tiers, and classifies Healthcare Professionals (HCPs) for pharmaceutical sales teams. Feed it a CSV of HCP data and get back actionable segments like **High-Value KOL**, **Growth Target**, and **Digital Adopter**.
 
 ## Features
 
-- Data ingestion from CSV or Excel files
-- Input validation with clear error messages
-- Composite engagement score calculation (prescription volume, revenue, visits, digital engagement)
-- Rule-based tier assignment (Tier 1–4)
-- Named segment classification: High-Value KOL, Growth Target, Digital Adopter, Standard, Low Activity, Dormant
-- Specialty and region filtering
-- Full pipeline in a single method call
-- Sample data and demo CSV included
-- 80%+ test coverage with pytest
-
-## Installation
-
-```bash
-pip install -r requirements.txt
-```
+- **Data ingestion** from CSV or Excel (.xlsx/.xls) files
+- **Input validation** with clear, actionable error messages
+- **Composite scoring** using weighted, min-max normalised prescription volume, revenue, digital engagement, and visit data
+- **Tier assignment** (Tier 1-4) based on configurable prescription thresholds
+- **Segment classification** into six named segments: High-Value KOL, Growth Target, Digital Adopter, Standard, Low Activity, Dormant
+- **Specialty and region filtering** for targeted analysis
+- **Full pipeline** from raw data to enriched output in a single method call
+- **Immutable design** -- every operation returns a new DataFrame; inputs are never mutated
+- **32 unit tests** with pytest covering validation, scoring, tiering, segmentation, filtering, and edge cases
 
 ## Quick Start
+
+```bash
+# Clone the repo
+git clone https://github.com/achmadnaufal/hcp-segmentation-engine.git
+cd hcp-segmentation-engine
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the full pipeline on the demo dataset
+python -c "
+from src.main import HCPSegmentationEngine
+
+engine = HCPSegmentationEngine()
+df = engine.load_data('demo/sample_data.csv')
+result = engine.run_full_pipeline(df)
+print(result[['hcp_id', 'name', 'composite_score', 'computed_tier', 'computed_segment']].to_string(index=False))
+"
+```
+
+## Usage
+
+### Full pipeline (one-liner)
 
 ```python
 from src.main import HCPSegmentationEngine
 
 engine = HCPSegmentationEngine()
-
-# Load your data (CSV or Excel)
 df = engine.load_data("demo/sample_data.csv")
-
-# Run the full pipeline in one step
 result = engine.run_full_pipeline(df)
-
-# Inspect results
-print(result[["hcp_id", "name", "composite_score", "computed_tier", "computed_segment"]])
 ```
 
 ### Step-by-step pipeline
@@ -55,7 +69,7 @@ cardiologists = engine.filter_by_specialty(segmented, "Cardiology")
 northeast     = engine.filter_by_region(segmented, "Northeast")
 ```
 
-### Custom configuration
+### Custom tier thresholds
 
 ```python
 custom_config = {
@@ -64,56 +78,99 @@ custom_config = {
 engine = HCPSegmentationEngine(config=custom_config)
 ```
 
-## Sample Data
+### Sample output
 
-`demo/sample_data.csv` contains 20 realistic HCP records with the following columns:
-
-| Column | Description |
-|---|---|
-| `hcp_id` | Unique HCP identifier |
-| `name` | Healthcare professional name |
-| `specialty` | Medical specialty |
-| `city` | Practice city |
-| `region` | Geographic region |
-| `prescriptions_last_12m` | Total prescriptions in the last 12 months |
-| `total_rx_value_usd` | Total prescription value (USD) |
-| `num_visits` | Number of rep visits |
-| `digital_engagement_score` | Digital channel engagement (0–100) |
-| `kol_flag` | Key Opinion Leader indicator (0/1) |
-| `tier` | Pre-assigned tier label |
-| `segment` | Pre-assigned segment label |
-
-### Preview
+Running the full pipeline on `demo/sample_data.csv` (20 HCP records):
 
 ```
-HCP001  Dr. Sarah Mitchell  Cardiology   New York   Northeast  342  128500  8  87  1  Tier 1  High-Value KOL
-HCP002  Dr. James Okonkwo   Oncology     Houston    South      278  104200  6  72  1  Tier 1  High-Value KOL
-HCP003  Dr. Linda Chen      Neurology    Los Angeles West      215   80750  5  65  0  Tier 2  Growth Target
-...
+$ python -c "from src.main import HCPSegmentationEngine; engine = HCPSegmentationEngine(); df = engine.load_data('demo/sample_data.csv'); result = engine.run_full_pipeline(df); print(result[['hcp_id','name','specialty','composite_score','computed_tier','computed_segment']].to_string(index=False))"
+
+hcp_id                name     specialty  composite_score  computed_tier computed_segment
+HCP001  Dr. Sarah Mitchell    Cardiology           100.00              1   High-Value KOL
+HCP002   Dr. James Okonkwo      Oncology            79.61              2   High-Value KOL
+HCP003      Dr. Linda Chen     Neurology            63.11              2    Growth Target
+HCP004    Dr. Robert Patel  Primary Care            52.96              2         Standard
+HCP005  Dr. Maria Gonzalez Endocrinology            54.45              2  Digital Adopter
+HCP006   Dr. Thomas Nguyen    Cardiology            50.66              2  Digital Adopter
+HCP007   Dr. Angela Brooks  Rheumatology            40.02              2         Standard
+HCP008     Dr. Kevin Walsh      Oncology            39.41              2         Standard
+HCP009    Dr. Priya Sharma     Neurology            40.83              2  Digital Adopter
+HCP010   Dr. Carlos Rivera  Primary Care            31.85              2         Standard
+HCP011    Dr. Emily Foster Endocrinology            36.38              3  Digital Adopter
+HCP012  Dr. Marcus Johnson    Cardiology            30.35              3         Standard
+HCP013      Dr. Rachel Kim  Rheumatology            28.49              3  Digital Adopter
+HCP014 Dr. Daniel Martinez      Oncology            21.31              3     Low Activity
+HCP015 Dr. Sophie Anderson     Neurology            19.70              3     Low Activity
+HCP016  Dr. Brian Thompson  Primary Care            15.41              4     Low Activity
+HCP017    Dr. Laura Wilson Endocrinology            18.10              4     Low Activity
+HCP018    Dr. Nathan Davis    Cardiology            11.93              4     Low Activity
+HCP019   Dr. Olivia Harris  Rheumatology             4.51              4          Dormant
+HCP020     Dr. Michael Lee  Primary Care             0.00              4          Dormant
 ```
 
-## Running Tests
-
-```bash
-# Install pytest if needed
-pip install pytest
-
-# Run all tests
-pytest tests/ -v
-
-# Run with coverage report
-pip install pytest-cov
-pytest tests/ --cov=src --cov-report=term-missing
-```
-
-Expected output:
+**Segment distribution:**
 
 ```
-tests/test_segmentation.py::TestValidation::test_validate_raises_on_empty_dataframe PASSED
-tests/test_segmentation.py::TestScoreCalculation::test_composite_score_column_created PASSED
-...
-34 passed in 0.85s
+Standard           5
+Digital Adopter    5
+Low Activity       5
+High-Value KOL     2
+Dormant            2
+Growth Target      1
 ```
+
+**Filter by specialty (Cardiology only):**
+
+```
+hcp_id               name  composite_score  computed_tier computed_segment
+HCP001 Dr. Sarah Mitchell           100.00              1   High-Value KOL
+HCP006  Dr. Thomas Nguyen            50.66              2  Digital Adopter
+HCP012 Dr. Marcus Johnson            30.35              3         Standard
+HCP018   Dr. Nathan Davis            11.93              4     Low Activity
+```
+
+## Tech Stack
+
+| Tool | Purpose |
+|------|---------|
+| **Python 3.9+** | Core language |
+| **pandas** | Data manipulation and pipeline |
+| **NumPy** | Numerical operations and normalisation |
+| **pytest** | Unit testing (32 tests, 80%+ coverage) |
+| **scikit-learn** | Available for future ML-based segmentation |
+| **Rich** | Terminal formatting (optional) |
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A["CSV / Excel\nHCP Data"] -->|load_data| B["Raw\nDataFrame"]
+    B -->|preprocess| C["Cleaned\nDataFrame"]
+    C -->|validate| D{Valid?}
+    D -->|No| E["ValueError\nwith details"]
+    D -->|Yes| F["calculate_scores\n(weighted min-max)"]
+    F --> G["assign_tiers\n(Tier 1-4)"]
+    G --> H["segment\n(6 named segments)"]
+    H --> I["Enriched\nDataFrame"]
+    I -->|filter_by_specialty| J["Filtered\nSubset"]
+    I -->|filter_by_region| J
+    I -->|to CSV / analyze| K["Export /\nSummary Stats"]
+
+    style A fill:#e1f5fe
+    style I fill:#c8e6c9
+    style E fill:#ffcdd2
+    style K fill:#fff9c4
+```
+
+**Pipeline stages:**
+
+1. **Ingest** -- Load HCP records from CSV or Excel via `load_data()`
+2. **Clean** -- Standardise column names, drop null rows, fill missing numerics with medians via `preprocess()`
+3. **Validate** -- Assert required columns exist and dataset is non-empty via `validate()`
+4. **Score** -- Compute a weighted composite score (0-100) from prescription volume, Rx value, digital engagement, and visits via `calculate_scores()`
+5. **Tier** -- Assign Tier 1-4 based on prescription volume thresholds via `assign_tiers()`
+6. **Segment** -- Classify each HCP into one of six actionable segments via `segment()`
+7. **Filter / Export** -- Slice by specialty or region; export or analyse results
 
 ## Project Structure
 
@@ -121,49 +178,39 @@ tests/test_segmentation.py::TestScoreCalculation::test_composite_score_column_cr
 hcp-segmentation-engine/
 ├── src/
 │   ├── __init__.py
-│   ├── main.py            # Core engine: scoring, tiering, segmentation
-│   └── data_generator.py  # Synthetic data generator
+│   ├── main.py              # Core engine: scoring, tiering, segmentation
+│   └── data_generator.py    # Synthetic data generator
 ├── tests/
-│   └── test_segmentation.py  # pytest unit tests (80%+ coverage)
+│   └── test_segmentation.py # pytest unit tests (32 tests)
 ├── demo/
-│   └── sample_data.csv    # 20-row realistic HCP dataset
+│   └── sample_data.csv      # 20-row realistic HCP dataset
+├── sample_data/
+│   └── sample_data.csv      # Lightweight sample for quick testing
 ├── examples/
-│   └── basic_usage.py     # Runnable usage example
-├── data/                  # Drop real data here (gitignored)
+│   └── basic_usage.py       # Runnable usage example
+├── data/                    # Drop real data here (gitignored)
 ├── requirements.txt
+├── LICENSE
 ├── CHANGELOG.md
 └── README.md
 ```
 
-## Segmentation Logic
+## Running Tests
 
-| Segment | Criteria |
-|---|---|
-| High-Value KOL | `kol_flag == 1` AND `composite_score >= 70` |
-| Growth Target | `composite_score >= 60` |
-| Digital Adopter | `digital_engagement_score >= 60` |
-| Standard | `composite_score >= 30` |
-| Low Activity | `composite_score >= 10` |
-| Dormant | Everything else |
+```bash
+pytest tests/ -v
+```
 
-## Tier Thresholds (default)
-
-| Tier | Prescriptions (last 12m) |
-|---|---|
-| Tier 1 | >= 300 |
-| Tier 2 | >= 100 |
-| Tier 3 | >= 50 |
-| Tier 4 | < 50 |
-
-## Composite Score Weights (default)
-
-| Feature | Weight |
-|---|---|
-| Prescriptions last 12m | 40% |
-| Total Rx value (USD) | 30% |
-| Digital engagement score | 20% |
-| Number of visits | 10% |
+```
+tests/test_segmentation.py::TestValidation::test_validate_raises_on_empty_dataframe PASSED
+tests/test_segmentation.py::TestValidation::test_validate_raises_on_missing_required_columns PASSED
+tests/test_segmentation.py::TestValidation::test_validate_passes_with_required_columns PASSED
+...
+================================ 32 passed in 0.21s ================================
+```
 
 ## License
 
-MIT License — free to use, modify, and distribute.
+[MIT](LICENSE)
+
+> Built by [Achmad Naufal](https://github.com/achmadnaufal) | Lead Data Analyst | Power BI · SQL · Python · GIS
