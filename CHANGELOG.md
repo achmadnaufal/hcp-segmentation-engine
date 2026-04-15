@@ -1,17 +1,37 @@
 # Changelog
 
-## [0.2.0] - 2026-04-15
+## [0.2.0] - 2026-04-16
+
 ### Added
-- Unit tests with pytest
-- Sample data for demo purposes
-- Comprehensive docstrings
-- Input validation and edge case handling
-- Improved README with usage examples
+- `tests/__init__.py` to make the tests directory a proper Python package
+- `get_segment_summary()` method on `HCPSegmentationEngine` returning per-segment counts and average composite scores
+- `_normalise_columns()` and `_min_max_normalise()` module-level helper functions, each with full docstrings
+- `SUPPORTED_EXTENSIONS`, `SEGMENT_NAMES`, and `_SEGMENT_THRESHOLDS` module-level constants
+- `segment_thresholds` key supported in `config` dict to override KOL/growth/digital/standard/low-activity cut-offs
+- `brand_prescriptions`, `visit_frequency`, `years_experience`, `hospital_tier`, and `total_prescriptions` columns to `demo/sample_data.csv`
+- Comprehensive type hints (`from __future__ import annotations`) on all functions and methods
+- `logging` integration throughout the engine (warnings for duplicate HCP IDs, missing score columns)
+- 40+ pytest unit tests across 9 test classes covering helpers, construction, validation, preprocessing, scoring, tiering, segmentation, filtering, analysis, full pipeline, and edge cases
+
+### Changed
+- All public methods now raise `TypeError` (instead of passing silently) when passed non-DataFrame arguments
+- `validate()` raises `TypeError` for `None` or non-DataFrame input (previously `ValueError` or `AttributeError`)
+- `filter_by_specialty()` and `filter_by_region()` raise `ValueError` for empty string arguments
+- `to_dataframe()` raises `TypeError` for non-dict input
+- `assign_tiers()` raises `ValueError` when `tier_thresholds` config is missing required tier keys
+- `load_data()` raises `ValueError` when the loaded file contains zero rows
+- `preprocess()` raises `ValueError` when the DataFrame is empty after dropping all-null rows
+- Immutable pattern enforced consistently: every method returns a new DataFrame; no in-place mutations
+
+### Fixed
+- Dead intermediate `tier_col` assignments in `assign_tiers()` removed (logic was correct but had redundant lines)
+- `preprocess()` now applies `fillna` only when numeric columns exist (prevents warnings on text-only DataFrames)
 
 ## [0.1.0] - 2024-01-01
+
 ### Added
 - Initial project scaffold
-- HCPSegmentationEngine core class
+- `HCPSegmentationEngine` core class
 - CSV/Excel data loading
 - Basic analysis pipeline
 - Sample data generator
