@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased] - 2026-04-17
+
+### Added
+- `src/segment_migration_analyzer.py` — new module that computes HCP segment transitions between two time periods. Provides `compute_migration_table()` (per-HCP upgrade/downgrade/stable flags and churn-risk scores), `build_migration_matrix()` (segment-to-segment count or normalised fraction matrix), and `summarise_migrations()` (cohort-level statistics including churned count and top-churn-risk HCP list). Fully immutable; inputs are never mutated.
+- `tests/test_segment_migration_analyzer.py` — 39 pytest tests covering happy paths, single-HCP, fully stable and fully churned cohorts, unmatched HCP exclusion, normalised matrix row-sum validation, determinism, type/value error guards, and parametrised direction cases.
+
 ## [0.2.0] - 2026-04-16
 
 ### Added

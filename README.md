@@ -134,6 +134,59 @@ Dormant            2
 Growth Target      1
 ```
 
+## New: Segment Migration Analyzer
+
+Track how HCPs move between segments across two time periods — surface upgrades, downgrades, and churn risk without modifying your original data.
+
+### Step-by-step usage
+
+```python
+import pandas as pd
+from src.segment_migration_analyzer import (
+    compute_migration_table,
+    build_migration_matrix,
+    summarise_migrations,
+)
+
+# Period A — output of run_full_pipeline() for Q1
+df_q1 = engine.run_full_pipeline(engine.load_data("data/q1_hcps.csv"))
+
+# Period B — output of run_full_pipeline() for Q2
+df_q2 = engine.run_full_pipeline(engine.load_data("data/q2_hcps.csv"))
+
+# 1. Per-HCP transition table (inner-joins on hcp_id)
+migration = compute_migration_table(df_q1, df_q2)
+print(migration[["hcp_id", "segment_before", "segment_after", "direction", "churn_risk_score"]])
+
+# 2. Segment-to-segment matrix (counts)
+matrix = build_migration_matrix(migration)
+print(matrix)
+
+# 3. Normalised matrix (row fractions — where did each segment go?)
+matrix_pct = build_migration_matrix(migration, normalise=True)
+print(matrix_pct)
+
+# 4. Cohort-level summary statistics
+stats = summarise_migrations(migration)
+print(f"Upgraded:   {stats['upgraded']}  ({stats['pct_upgraded']}%)")
+print(f"Downgraded: {stats['downgraded']}  ({stats['pct_downgraded']}%)")
+print(f"Churned:    {stats['churned']}  ({stats['pct_churned']}%)")
+print(f"Top churn-risk HCPs: {stats['top_churn_risk_hcps']}")
+```
+
+### What you get
+
+| Column / Key | Description |
+|---|---|
+| `direction` | `"upgrade"`, `"downgrade"`, or `"stable"` |
+| `rank_delta` | Signed rank change (positive = moved up the value ladder) |
+| `is_churned` | `True` when the HCP ended the period as `"Dormant"` |
+| `churn_risk_score` | Normalised rank drop in [0, 1] — larger = higher risk |
+| `pct_upgraded` | Cohort-level percentage that improved segment |
+| `top_churn_risk_hcps` | Up to 5 HCP IDs most at risk of full churn |
+
+Segments are ranked in priority order: `Dormant` → `Low Activity` → `Standard` → `Digital Adopter` → `Growth Target` → `High-Value KOL`.
+
 ## Tech Stack
 
 | Tool | Purpose |
