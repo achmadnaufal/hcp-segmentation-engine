@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased] - 2026-04-18
+
+### Added
+- `src/rfm_scorer.py` — new RFM (Recency-Frequency-Monetary) scoring module for HCP prescribing behaviour. Public API: `compute_rfm_scores()` (per-HCP quintile scores 1-5 plus composite 0-100 score and categorical segment label — `Champion`, `Loyal`, `Casual`, `At Risk`, `Lost`), `get_top_hcps()` (top-N ranking helper), and `summarise_rfm_segments()` (per-segment cohort counts and averages). Configurable weights, custom column names, and reference date support; fully immutable (input DataFrames are never mutated).
+- `src/__init__.py` re-exports the new public API for `from src import compute_rfm_scores, ...`.
+- `tests/test_rfm_scorer.py` — 23 pytest tests across happy path, single-HCP and all-zero edges, NaN handling, weight validation, top-N ranking, segment summary, immutability, and determinism.
+- `sample_data/sample_rfm.csv` and `demo/sample_rfm.csv` — 18-row realistic RFM dataset (`hcp_id`, `name`, `specialty`, `last_rx_date`, `rx_count_90d`, `total_rx_value_usd`, `calls_90d`, `segment`).
+- README "RFM Scorer" section with Quick Start, step-by-step usage, and required input columns.
+
 ## [Unreleased] - 2026-04-17
 
 ### Added

@@ -1,0 +1,19 @@
+hcp_id,name,specialty,last_rx_date,rx_count_90d,total_rx_value_usd,calls_90d,segment
+HCP001,Dr. Sarah Mitchell,Cardiology,2026-04-15,142,53250.00,8,Champion
+HCP002,Dr. James Okonkwo,Oncology,2026-04-12,118,44250.00,6,Champion
+HCP003,Dr. Linda Chen,Neurology,2026-04-05,95,35625.00,5,Loyal
+HCP004,Dr. Robert Patel,Primary Care,2026-03-28,78,19500.00,7,Loyal
+HCP005,Dr. Maria Gonzalez,Endocrinology,2026-03-20,64,24000.00,4,Loyal
+HCP006,Dr. Thomas Nguyen,Cardiology,2026-03-12,55,20625.00,3,Casual
+HCP007,Dr. Angela Brooks,Rheumatology,2026-03-01,48,18000.00,5,Casual
+HCP008,Dr. Kevin Walsh,Oncology,2026-02-22,42,15750.00,4,Casual
+HCP009,Dr. Priya Sharma,Neurology,2026-02-14,36,13500.00,3,Casual
+HCP010,Dr. Carlos Rivera,Primary Care,2026-02-05,28,7000.00,6,At Risk
+HCP011,Dr. Emily Foster,Endocrinology,2026-01-25,22,8250.00,2,At Risk
+HCP012,Dr. Marcus Johnson,Cardiology,2026-01-15,18,6750.00,4,At Risk
+HCP013,Dr. Rachel Kim,Rheumatology,2025-12-30,14,5250.00,2,At Risk
+HCP014,Dr. Daniel Martinez,Oncology,2025-12-15,11,4125.00,3,Lost
+HCP015,Dr. Sophie Anderson,Neurology,2025-11-28,8,3000.00,2,Lost
+HCP016,Dr. Brian Thompson,Primary Care,2025-11-10,6,1500.00,4,Lost
+HCP017,Dr. Laura Wilson,Endocrinology,2025-10-20,4,1500.00,1,Lost
+HCP018,Dr. Nathan Davis,Cardiology,2025-09-30,3,1125.00,2,Lost

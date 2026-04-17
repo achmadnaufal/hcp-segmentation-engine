@@ -134,6 +134,75 @@ Dormant            2
 Growth Target      1
 ```
 
+## New: RFM Scorer (Recency / Frequency / Monetary)
+
+Score and rank HCPs on the three classic commercial dimensions of prescribing
+behaviour. Each HCP gets a 1-5 quintile per dimension, a concatenated
+`rfm_code` (e.g. `"555"` = top tier), a weighted composite `rfm_score`
+in `[0, 100]`, and a categorical `rfm_segment` (`Champion`, `Loyal`,
+`Casual`, `At Risk`, `Lost`).
+
+### Quick Start
+
+```python
+import pandas as pd
+from src.rfm_scorer import (
+    compute_rfm_scores,
+    get_top_hcps,
+    summarise_rfm_segments,
+)
+
+# 1. Load HCP-level prescribing data
+df = pd.read_csv("demo/sample_rfm.csv")
+
+# 2. Score every HCP (reference_date defaults to today)
+scored = compute_rfm_scores(df, reference_date="2026-04-18")
+print(
+    scored[
+        ["hcp_id", "recency_days", "r_score", "f_score",
+         "m_score", "rfm_code", "rfm_score", "rfm_segment"]
+    ].to_string(index=False)
+)
+
+# 3. Pull the top 10 HCPs for sales prioritisation
+print(get_top_hcps(scored, n=10)[["hcp_id", "rfm_score", "rfm_segment"]])
+
+# 4. Cohort summary (counts and avg score per RFM segment)
+print(summarise_rfm_segments(scored))
+```
+
+### Step-by-step usage
+
+```python
+# Override the default 30/35/35 weighting (recency/frequency/monetary)
+custom_weights = {"recency": 0.50, "frequency": 0.25, "monetary": 0.25}
+scored = compute_rfm_scores(
+    df,
+    reference_date="2026-04-18",
+    weights=custom_weights,
+    last_rx_date_col="last_rx_date",
+    rx_count_col="rx_count_90d",
+    rx_value_col="total_rx_value_usd",
+)
+
+# Filter to actionable cohorts
+champions = scored[scored["rfm_segment"] == "Champion"]
+at_risk   = scored[scored["rfm_segment"] == "At Risk"]
+```
+
+### Required input columns
+
+| Column | Type | Description |
+|---|---|---|
+| `hcp_id` | str | HCP identifier |
+| `last_rx_date` | date / str | Date of HCP's most recent prescription |
+| `rx_count_90d` | int | Prescription count in the analysis window |
+| `total_rx_value_usd` | float | Prescription dollar value in the same window |
+
+Missing dates default to `reference_date` (recency = 0); missing numerics
+are treated as zero. Single-HCP, all-zero, and zero-variance inputs are
+gracefully handled by assigning the median quintile (3).
+
 ## New: Segment Migration Analyzer
 
 Track how HCPs move between segments across two time periods — surface upgrades, downgrades, and churn risk without modifying your original data.
