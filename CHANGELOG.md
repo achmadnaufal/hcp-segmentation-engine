@@ -1,5 +1,18 @@
 # Changelog
 
+All notable changes to this project are documented in this file.
+This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased] - 2026-04-19
+
+### Added
+- `src/calling_plan_allocator.py` — new module that converts a segmented HCP cohort and an annual call-budget into a per-HCP allocation. Public API: `calculate_priority_score()` (blend composite + segment weight into 0-100 priority), `allocate_calls()` (scale-nudge-cap-reconcile budget allocation honouring per-HCP min/max), and `summarise_allocation()` (per-segment calls / HCPs / coverage). Handles empty cohorts, zero budget, single-HCP, identical priorities, NaN composite scores, and budgets exceeding capacity. Fully immutable and deterministic.
+- `src/__init__.py` re-exports the new public API for `from src import allocate_calls, calculate_priority_score, summarise_allocation`.
+- `tests/test_calling_plan_allocator.py` — 37 pytest tests covering priority scoring, budget conservation, per-HCP caps, single-HCP, identical priorities, NaN handling, determinism, immutability, invalid inputs, and default-constant sanity.
+- README section "Calling Plan Allocator" with quick-start, methodology, and example output.
+- README "Overview" and "Installation" top-level sections.
+
 ## [Unreleased] - 2026-04-18
 
 ### Added

@@ -8,6 +8,35 @@
 
 A Python-based segmentation and targeting engine that scores, tiers, and classifies Healthcare Professionals (HCPs) for pharmaceutical sales teams. Feed it a CSV of HCP data and get back actionable segments like **High-Value KOL**, **Growth Target**, and **Digital Adopter**.
 
+## Overview
+
+Pharma brand and sales-operations teams need to decide, every quarter, **which HCPs to prioritise** and **how many calls each should receive**. This engine turns raw HCP records (prescription volume, visits, digital engagement, KOL status) into a repeatable, auditable targeting plan:
+
+1. **Score** — a weighted composite score (0-100) per HCP.
+2. **Tier** — Tier 1 through Tier 4 by prescription volume.
+3. **Segment** — one of six named segments (High-Value KOL, Growth Target, Digital Adopter, Standard, Low Activity, Dormant).
+4. **Analyse** — RFM scoring for recency/frequency/monetary behaviour.
+5. **Track** — segment-migration analysis across two time periods.
+6. **Allocate** — distribute an annual call-budget across HCPs based on priority.
+
+Every operation is **immutable** (no in-place mutation of your DataFrames), **deterministic** (same inputs → same outputs), and **covered by pytest** (180+ tests).
+
+## Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/achmadnaufal/hcp-segmentation-engine.git
+cd hcp-segmentation-engine
+
+# (Optional) create a virtualenv
+python3 -m venv .venv && source .venv/bin/activate
+
+# Install runtime dependencies
+pip install -r requirements.txt
+```
+
+Requirements: Python 3.9 or newer, pandas, NumPy, scikit-learn, matplotlib, rich.
+
 ## Features
 
 - **Data ingestion** from CSV or Excel (.xlsx/.xls) files
@@ -256,6 +285,61 @@ print(f"Top churn-risk HCPs: {stats['top_churn_risk_hcps']}")
 
 Segments are ranked in priority order: `Dormant` → `Low Activity` → `Standard` → `Digital Adopter` → `Growth Target` → `High-Value KOL`.
 
+## New: Calling Plan Allocator
+
+Turn a segmented HCP cohort and a fixed annual call-budget into a per-HCP allocation that respects segment priorities, minimum and maximum call caps, and conserves the total budget exactly.
+
+### Quick Start
+
+```python
+from src.main import HCPSegmentationEngine
+from src.calling_plan_allocator import (
+    calculate_priority_score,
+    allocate_calls,
+    summarise_allocation,
+)
+
+engine = HCPSegmentationEngine()
+segmented = engine.run_full_pipeline(engine.load_data("demo/sample_data.csv"))
+
+# 1. Compute a 0-100 priority score blending composite + segment weight
+prioritised = calculate_priority_score(segmented)
+
+# 2. Distribute a 300-call annual budget across all HCPs
+plan = allocate_calls(
+    segmented,
+    total_calls_budget=300,
+    min_calls_per_hcp=0,
+    max_calls_per_hcp=36,
+)
+print(plan[["hcp_id", "computed_segment", "priority_score", "allocated_calls"]])
+
+# 3. Segment-level summary
+print(summarise_allocation(plan))
+```
+
+### Methodology
+
+1. **Priority score** — `priority = composite_score * blend + segment_weight * 100 * (1 - blend)` (default blend = 0.6). High-Value KOLs get weight 1.00, Dormant 0.05.
+2. **Seed** — each HCP starts at their segment's target cadence (KOL = 24/yr, Growth = 18/yr, Digital = 12/yr, Standard = 8/yr, Low Activity = 4/yr, Dormant = 0/yr).
+3. **Scale** — seeds are proportionally scaled so the total matches the requested budget.
+4. **Nudge** — up to 20% of each segment's allocation is redistributed toward higher-priority HCPs within the segment.
+5. **Cap & round** — values are clipped to `[min_calls_per_hcp, max_calls_per_hcp]`, rounded to int, and any ±1 rounding drift is settled against the highest-priority HCPs so the budget sums exactly.
+
+### Example Output
+
+```
+ hcp_id computed_segment  priority_score  allocated_calls
+ HCP001   High-Value KOL           95.20               36
+ HCP002   High-Value KOL           87.76               36
+ HCP003    Growth Target           75.86               27
+ HCP004    Growth Target           71.78               25
+ HCP005  Digital Adopter           58.67               17
+ ...
+```
+
+Edge cases handled: empty DataFrame, zero budget, single HCP, identical priorities, NaN composite scores, budgets exceeding total per-HCP capacity.
+
 ## Tech Stack
 
 | Tool | Purpose |
@@ -307,15 +391,21 @@ flowchart LR
 hcp-segmentation-engine/
 ├── src/
 │   ├── __init__.py
-│   ├── main.py              # Core engine: scoring, tiering, segmentation
-│   └── data_generator.py    # Synthetic data generator
+│   ├── main.py                       # Core engine: scoring, tiering, segmentation
+│   ├── rfm_scorer.py                 # Recency / Frequency / Monetary scoring
+│   ├── segment_migration_analyzer.py # Cross-period segment migration + churn risk
+│   ├── calling_plan_allocator.py     # Budget-constrained call allocation
+│   └── data_generator.py             # Synthetic data generator
 ├── tests/
-│   ├── __init__.py          # Makes tests a proper Python package
-│   └── test_segmentation.py # pytest unit tests (40+ tests, 9 classes)
+│   ├── __init__.py
+│   ├── test_segmentation.py              # HCPSegmentationEngine tests
+│   ├── test_rfm_scorer.py                # RFM scorer tests
+│   ├── test_segment_migration_analyzer.py# Segment migration tests
+│   └── test_calling_plan_allocator.py    # Calling-plan allocator tests
 ├── demo/
-│   └── sample_data.csv      # 20-row realistic HCP dataset (extended columns)
-├── sample_data/
-│   └── sample_data.csv      # Lightweight sample for quick testing
+│   ├── sample_data.csv      # 20-row realistic HCP dataset (extended columns)
+│   └── sample_rfm.csv       # 18-row RFM sample dataset
+├── sample_data/             # Alternate location for the same samples
 ├── examples/
 │   └── basic_usage.py       # Runnable usage example
 ├── data/                    # Drop real data here (gitignored)
