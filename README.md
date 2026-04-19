@@ -1,6 +1,6 @@
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Tests](https://img.shields.io/badge/tests-40%2B%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-227%20passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-80%25%2B-brightgreen)
 ![Last Commit](https://img.shields.io/github/last-commit/achmadnaufal/hcp-segmentation-engine)
 
@@ -18,8 +18,9 @@ Pharma brand and sales-operations teams need to decide, every quarter, **which H
 4. **Analyse** — RFM scoring for recency/frequency/monetary behaviour.
 5. **Track** — segment-migration analysis across two time periods.
 6. **Allocate** — distribute an annual call-budget across HCPs based on priority.
+7. **Target** — 2x2 potential-vs-actual bubble matrix surfacing untapped-demand HCPs.
 
-Every operation is **immutable** (no in-place mutation of your DataFrames), **deterministic** (same inputs → same outputs), and **covered by pytest** (180+ tests).
+Every operation is **immutable** (no in-place mutation of your DataFrames), **deterministic** (same inputs → same outputs), and **covered by pytest** (227 tests).
 
 ## Installation
 
@@ -48,7 +49,11 @@ Requirements: Python 3.9 or newer, pandas, NumPy, scikit-learn, matplotlib, rich
 - **Specialty and region filtering** for targeted analysis
 - **Full pipeline** from raw data to enriched output in a single method call
 - **Immutable design** -- every operation returns a new DataFrame; inputs are never mutated
-- **40+ unit tests** with pytest covering helpers, validation, scoring, tiering, segmentation, filtering, analysis, and edge cases
+- **Potential-vs-Actual matrix** (bubble segmentation) classifying HCPs into `Star`, `Grow`, `Maintain`, or `Monitor` with a per-HCP `gap_score` to surface untapped-demand targets
+- **RFM scoring** (Recency / Frequency / Monetary) with quintile scores, composite 0-100 score, and `Champion`/`Loyal`/`Casual`/`At Risk`/`Lost` labels
+- **Segment migration analyser** tracking per-HCP upgrades, downgrades, and churn risk across two time periods
+- **Calling-plan allocator** that distributes a fixed annual call budget across HCPs honouring segment priorities and per-HCP min/max caps
+- **227 pytest tests** (100% passing) covering helpers, validation, scoring, tiering, segmentation, filtering, RFM, migration, allocation, bubble segmentation, and edge cases
 
 ## Quick Start
 
@@ -126,30 +131,30 @@ engine = HCPSegmentationEngine(config=custom_config)
 
 ### Sample Output
 
-Running the full pipeline on `demo/sample_data.csv` (20 HCP records):
+Running the full pipeline on `demo/sample_data.csv` (20 HCP records, Indonesian HCPs across Jakarta, Surabaya, Bandung, Medan, Makassar, Denpasar, and Padang):
 
 ```
-hcp_id                name     specialty  composite_score  computed_tier computed_segment
-HCP001  Dr. Sarah Mitchell    Cardiology           100.00              1   High-Value KOL
-HCP002   Dr. James Okonkwo      Oncology            79.61              1   High-Value KOL
-HCP003      Dr. Linda Chen     Neurology            63.11              2    Growth Target
-HCP004    Dr. Robert Patel  Primary Care            52.96              2         Standard
-HCP005  Dr. Maria Gonzalez Endocrinology            54.45              2  Digital Adopter
-HCP006   Dr. Thomas Nguyen    Cardiology            50.66              2  Digital Adopter
-HCP007   Dr. Angela Brooks  Rheumatology            40.02              2         Standard
-HCP008     Dr. Kevin Walsh      Oncology            39.41              2         Standard
-HCP009    Dr. Priya Sharma     Neurology            40.83              2  Digital Adopter
-HCP010   Dr. Carlos Rivera  Primary Care            31.85              2         Standard
-HCP011    Dr. Emily Foster Endocrinology            36.38              3  Digital Adopter
-HCP012  Dr. Marcus Johnson    Cardiology            30.35              3         Standard
-HCP013      Dr. Rachel Kim  Rheumatology            28.49              3  Digital Adopter
-HCP014 Dr. Daniel Martinez      Oncology            21.31              3     Low Activity
-HCP015 Dr. Sophie Anderson     Neurology            19.70              3     Low Activity
-HCP016  Dr. Brian Thompson  Primary Care            15.41              4     Low Activity
-HCP017    Dr. Laura Wilson Endocrinology            18.10              4     Low Activity
-HCP018    Dr. Nathan Davis    Cardiology            11.93              4     Low Activity
-HCP019   Dr. Olivia Harris  Rheumatology             4.51              4          Dormant
-HCP020     Dr. Michael Lee  Primary Care             0.00              4          Dormant
+hcp_id                       name     specialty     city  composite_score  computed_tier computed_segment
+HCP001         Dr. Siti Mahendra    Cardiology  Jakarta           100.00              1   High-Value KOL
+HCP002         Dr. James Okonkwo      Oncology  Jakarta            79.61              2   High-Value KOL
+HCP003      Dr. Linda Tanuwijaya     Neurology Surabaya            63.11              2    Growth Target
+HCP004 Dr. Robert Pattiradjawane            GP  Jakarta            52.96              2         Standard
+HCP005        Dr. Maria Gonzales Endocrinology  Bandung            54.45              2  Digital Adopter
+HCP006         Dr. Thomas Nguyen    Cardiology Surabaya            50.66              2  Digital Adopter
+HCP007         Dr. Angela Brooks   Pulmonology    Medan            40.02              2         Standard
+HCP008           Dr. Kevin Walsh      Oncology  Jakarta            39.41              2         Standard
+HCP009          Dr. Priya Sharma     Neurology  Bandung            40.83              2  Digital Adopter
+HCP010         Dr. Carlos Rivera            GP Makassar            31.85              2         Standard
+HCP011          Dr. Emily Wijaya Endocrinology Makassar            36.38              3  Digital Adopter
+HCP012        Dr. Marcus Johnson    Cardiology Surabaya            30.35              3         Standard
+HCP013            Dr. Rachel Kim   Pulmonology Surabaya            28.49              3  Digital Adopter
+HCP014       Dr. Daniel Martinez      Oncology    Medan            21.31              3     Low Activity
+HCP015       Dr. Sophie Anderson     Neurology Denpasar            19.70              3     Low Activity
+HCP016        Dr. Brian Thompson            GP Denpasar            15.41              4     Low Activity
+HCP017          Dr. Laura Wilson Endocrinology    Medan            18.10              4     Low Activity
+HCP018          Dr. Nathan Davis    Cardiology   Padang            11.93              4     Low Activity
+HCP019         Dr. Olivia Harris   Pulmonology Makassar             4.51              4          Dormant
+HCP020           Dr. Michael Lee            GP  Bandung             0.00              4          Dormant
 ```
 
 **Segment distribution:**
@@ -340,6 +345,70 @@ print(summarise_allocation(plan))
 
 Edge cases handled: empty DataFrame, zero budget, single HCP, identical priorities, NaN composite scores, budgets exceeding total per-HCP capacity.
 
+## New: Potential-vs-Actual Matrix (Bubble Segmentation)
+
+Classify every HCP on a 2x2 strategic grid comparing their **potential** prescribing capacity (typically a market-research score) against their **actual** Rx volume, and surface the biggest untapped-demand targets.
+
+| Quadrant | Definition | Commercial action |
+|---|---|---|
+| **Star** | High potential, High actual | Protect and expand share of voice |
+| **Grow** | High potential, Low actual | Biggest conversion opportunity |
+| **Maintain** | Low potential, High actual | Protect at lower cost |
+| **Monitor** | Low potential, Low actual | Minimum investment |
+
+### Quick Start
+
+```python
+from src.main import HCPSegmentationEngine
+from src.potential_actual_matrix import (
+    compute_potential_actual_matrix,
+    summarise_quadrants,
+    top_growth_opportunities,
+)
+
+engine = HCPSegmentationEngine()
+df = engine.load_data("demo/sample_data.csv")
+
+# 1. Classify HCPs into the 2x2 matrix (median split by default)
+matrix = compute_potential_actual_matrix(df)
+print(matrix[["hcp_id", "potential_norm", "actual_norm", "gap_score", "quadrant"]])
+
+# 2. Quadrant-level summary (counts, avg potential/actual/gap, % of cohort)
+print(summarise_quadrants(matrix))
+
+# 3. Top 10 untapped-demand HCPs (largest positive gap)
+print(top_growth_opportunities(matrix, n=10))
+```
+
+### Required input columns
+
+| Column | Type | Description |
+|---|---|---|
+| `potential_score` | numeric | Market-potential or opportunity score per HCP |
+| `rx_volume_last_12m` | numeric | Actual 12-month Rx volume (falls back to `prescriptions_last_12m`) |
+
+Edge cases handled: empty DataFrame, single HCP, all-zero volumes, NaN in key columns, duplicate IDs, missing specialty column, alternate actual-volume schemas.
+
+## Input Schema Expectations
+
+The engine is tolerant — column names are normalised to `lower_snake_case` on ingest and extra columns are preserved untouched. The minimum schema required to run `run_full_pipeline()` is:
+
+| Column | Type | Required by | Notes |
+|---|---|---|---|
+| `hcp_id` | str | all stages | Identifier (duplicates trigger a warning, never an error) |
+| `specialty` | str | `validate`, `filter_by_specialty` | E.g. `Cardiology`, `Oncology`, `Endocrinology`, `Neurology`, `GP`, `Pulmonology` |
+| `prescriptions_last_12m` | numeric | `assign_tiers`, scoring | Used as the tier-assignment axis |
+| `digital_engagement_score` | numeric | `validate`, `segment` | 0-100 scale |
+
+Optional columns the engine will pick up automatically when present:
+
+- `total_rx_value_usd`, `num_visits` — contribute to the composite score
+- `kol_flag` (0/1) — promotes eligible HCPs to `High-Value KOL`
+- `region`, `city`, `institution` — used by filter helpers and reporting
+- `potential_score`, `rx_volume_last_12m`, `rx_volume_last_6m`, `call_count_ytd`, `last_call_date`, `engagement_score` — consumed by the RFM scorer, calling-plan allocator, and the potential-vs-actual matrix
+
+Missing numerics are filled with the column median during preprocessing; missing `last_rx_date` values default to the analysis reference date (recency = 0).
+
 ## Tech Stack
 
 | Tool | Purpose |
@@ -347,7 +416,7 @@ Edge cases handled: empty DataFrame, zero budget, single HCP, identical prioriti
 | **Python 3.9+** | Core language |
 | **pandas** | Data manipulation and pipeline |
 | **NumPy** | Numerical operations and normalisation |
-| **pytest** | Unit testing (40+ tests, 80%+ coverage) |
+| **pytest** | Unit testing (227 tests, 80%+ coverage) |
 | **scikit-learn** | Available for future ML-based segmentation |
 | **Rich** | Terminal formatting (optional) |
 
@@ -395,13 +464,15 @@ hcp-segmentation-engine/
 │   ├── rfm_scorer.py                 # Recency / Frequency / Monetary scoring
 │   ├── segment_migration_analyzer.py # Cross-period segment migration + churn risk
 │   ├── calling_plan_allocator.py     # Budget-constrained call allocation
+│   ├── potential_actual_matrix.py    # Potential-vs-Actual bubble segmentation
 │   └── data_generator.py             # Synthetic data generator
 ├── tests/
 │   ├── __init__.py
-│   ├── test_segmentation.py              # HCPSegmentationEngine tests
-│   ├── test_rfm_scorer.py                # RFM scorer tests
-│   ├── test_segment_migration_analyzer.py# Segment migration tests
-│   └── test_calling_plan_allocator.py    # Calling-plan allocator tests
+│   ├── test_segmentation.py                # HCPSegmentationEngine tests
+│   ├── test_rfm_scorer.py                  # RFM scorer tests
+│   ├── test_segment_migration_analyzer.py  # Segment migration tests
+│   ├── test_calling_plan_allocator.py      # Calling-plan allocator tests
+│   └── test_potential_actual_matrix.py     # Potential-vs-Actual matrix tests
 ├── demo/
 │   ├── sample_data.csv      # 20-row realistic HCP dataset (extended columns)
 │   └── sample_rfm.csv       # 18-row RFM sample dataset
@@ -439,7 +510,7 @@ tests/test_segmentation.py::TestTierAssignment::test_all_tier_boundaries PASSED
 tests/test_segmentation.py::TestSegmentation::test_kol_high_value_segment PASSED
 tests/test_segmentation.py::TestFullPipeline::test_full_pipeline_produces_all_columns PASSED
 ...
-================================ 40+ passed in 0.xx s ================================
+================================ 227 passed in 0.xx s ================================
 ```
 
 ## License

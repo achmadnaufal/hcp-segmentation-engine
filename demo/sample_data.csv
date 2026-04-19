@@ -1,21 +1,21 @@
-hcp_id,name,specialty,city,region,prescriptions_last_12m,total_rx_value_usd,num_visits,digital_engagement_score,kol_flag,tier,segment,brand_prescriptions,visit_frequency,years_experience,hospital_tier,total_prescriptions
-HCP001,Dr. Sarah Mitchell,Cardiology,New York,Northeast,342,128500.00,8,87,1,1,High-Value KOL,298,8,22,1,342
-HCP002,Dr. James Okonkwo,Oncology,Houston,South,278,104200.00,6,72,1,1,High-Value KOL,231,6,17,1,278
-HCP003,Dr. Linda Chen,Neurology,Los Angeles,West,215,80750.00,5,65,0,2,Growth Target,162,5,14,2,215
-HCP004,Dr. Robert Patel,Primary Care,Chicago,Midwest,189,47250.00,7,58,0,2,Growth Target,121,7,11,2,189
-HCP005,Dr. Maria Gonzalez,Endocrinology,Miami,South,163,61125.00,4,79,0,2,Digital Adopter,98,4,9,2,163
-HCP006,Dr. Thomas Nguyen,Cardiology,Seattle,West,148,55500.00,3,82,0,2,Digital Adopter,89,3,13,1,148
-HCP007,Dr. Angela Brooks,Rheumatology,Boston,Northeast,132,49500.00,5,44,0,3,Standard,72,5,8,2,132
-HCP008,Dr. Kevin Walsh,Oncology,Philadelphia,Northeast,127,47625.00,4,51,0,3,Standard,68,4,10,2,127
-HCP009,Dr. Priya Sharma,Neurology,Phoenix,West,119,44625.00,3,68,0,3,Digital Adopter,61,3,7,3,119
-HCP010,Dr. Carlos Rivera,Primary Care,San Antonio,South,108,27000.00,6,39,0,3,Standard,52,6,15,2,108
-HCP011,Dr. Emily Foster,Endocrinology,San Diego,West,97,36375.00,2,74,0,3,Digital Adopter,44,2,6,3,97
-HCP012,Dr. Marcus Johnson,Cardiology,Dallas,South,89,33375.00,4,47,0,3,Standard,41,4,19,2,89
-HCP013,Dr. Rachel Kim,Rheumatology,San Jose,West,76,28500.00,2,61,0,4,Low Activity,31,2,5,3,76
-HCP014,Dr. Daniel Martinez,Oncology,Austin,South,68,25500.00,3,35,0,4,Low Activity,27,3,12,3,68
-HCP015,Dr. Sophie Anderson,Neurology,Jacksonville,South,57,21375.00,2,43,0,4,Low Activity,21,2,4,3,57
-HCP016,Dr. Brian Thompson,Primary Care,Columbus,Midwest,49,12250.00,4,28,0,4,Low Activity,16,4,20,3,49
-HCP017,Dr. Laura Wilson,Endocrinology,Charlotte,South,41,15375.00,1,55,0,4,Low Activity,14,1,3,3,41
-HCP018,Dr. Nathan Davis,Cardiology,Indianapolis,Midwest,34,12750.00,2,32,0,4,Low Activity,11,2,8,3,34
-HCP019,Dr. Olivia Harris,Rheumatology,Denver,West,22,8250.00,1,19,0,4,Dormant,6,1,2,3,22
-HCP020,Dr. Michael Lee,Primary Care,Portland,West,11,2750.00,1,12,0,4,Dormant,3,1,1,3,11
+hcp_id,name,hcp_name,specialty,institution,city,region,prescriptions_last_12m,rx_volume_last_12m,rx_volume_last_6m,total_rx_value_usd,num_visits,call_count_ytd,last_call_date,digital_engagement_score,engagement_score,potential_score,kol_flag,tier,segment,brand_prescriptions,visit_frequency,years_experience,hospital_tier,total_prescriptions
+HCP001,Dr. Siti Mahendra,Dr. Siti Mahendra,Cardiology,RSUP Cipto Mangunkusumo,Jakarta,Java,342,342,182,128500.00,8,14,2026-04-10,87,87,95,1,1,High-Value KOL,298,8,22,1,342
+HCP002,Dr. James Okonkwo,Dr. James Okonkwo,Oncology,RS Dharmais,Jakarta,Java,278,278,146,104200.00,6,11,2026-04-02,72,72,92,1,1,High-Value KOL,231,6,17,1,278
+HCP003,Dr. Linda Tanuwijaya,Dr. Linda Tanuwijaya,Neurology,RSUD Dr Soetomo,Surabaya,Java,215,215,112,80750.00,5,9,2026-03-25,65,65,82,0,2,Growth Target,162,5,14,2,215
+HCP004,Dr. Robert Pattiradjawane,Dr. Robert Pattiradjawane,GP,Puskesmas Kebayoran Baru,Jakarta,Java,189,189,98,47250.00,7,10,2026-03-18,58,58,70,0,2,Growth Target,121,7,11,2,189
+HCP005,Dr. Maria Gonzales,Dr. Maria Gonzales,Endocrinology,RSHS Bandung,Bandung,Java,163,163,85,61125.00,4,8,2026-03-12,79,79,78,0,2,Digital Adopter,98,4,9,2,163
+HCP006,Dr. Thomas Nguyen,Dr. Thomas Nguyen,Cardiology,RS Mitra Keluarga,Surabaya,Java,148,148,78,55500.00,3,7,2026-03-04,82,82,75,0,2,Digital Adopter,89,3,13,1,148
+HCP007,Dr. Angela Brooks,Dr. Angela Brooks,Pulmonology,RSUP H Adam Malik,Medan,Sumatra,132,132,68,49500.00,5,7,2026-02-24,44,44,62,0,3,Standard,72,5,8,2,132
+HCP008,Dr. Kevin Walsh,Dr. Kevin Walsh,Oncology,RS Kanker Dharmais,Jakarta,Java,127,127,65,47625.00,4,6,2026-02-18,51,51,58,0,3,Standard,68,4,10,2,127
+HCP009,Dr. Priya Sharma,Dr. Priya Sharma,Neurology,RS Hasan Sadikin,Bandung,Java,119,119,61,44625.00,3,5,2026-02-10,68,68,55,0,3,Digital Adopter,61,3,7,3,119
+HCP010,Dr. Carlos Rivera,Dr. Carlos Rivera,GP,Puskesmas Ujung Pandang,Makassar,Sulawesi,108,108,55,27000.00,6,6,2026-02-05,39,39,48,0,3,Standard,52,6,15,2,108
+HCP011,Dr. Emily Wijaya,Dr. Emily Wijaya,Endocrinology,RS Pelamonia,Makassar,Sulawesi,97,97,50,36375.00,2,4,2026-01-28,74,74,52,0,3,Digital Adopter,44,2,6,3,97
+HCP012,Dr. Marcus Johnson,Dr. Marcus Johnson,Cardiology,RS Mayapada,Surabaya,Java,89,89,45,33375.00,4,5,2026-01-20,47,47,45,0,3,Standard,41,4,19,2,89
+HCP013,Dr. Rachel Kim,Dr. Rachel Kim,Pulmonology,RSAL Dr Ramelan,Surabaya,Java,76,76,38,28500.00,2,3,2026-01-12,61,61,40,0,4,Low Activity,31,2,5,3,76
+HCP014,Dr. Daniel Martinez,Dr. Daniel Martinez,Oncology,RS Awal Bros,Medan,Sumatra,68,68,34,25500.00,3,4,2025-12-30,35,35,35,0,4,Low Activity,27,3,12,3,68
+HCP015,Dr. Sophie Anderson,Dr. Sophie Anderson,Neurology,RSUP Sanglah,Denpasar,Bali,57,57,28,21375.00,2,3,2025-12-20,43,43,32,0,4,Low Activity,21,2,4,3,57
+HCP016,Dr. Brian Thompson,Dr. Brian Thompson,GP,Puskesmas Denpasar Selatan,Denpasar,Bali,49,49,24,12250.00,4,3,2025-12-10,28,28,28,0,4,Low Activity,16,4,20,3,49
+HCP017,Dr. Laura Wilson,Dr. Laura Wilson,Endocrinology,RS Murni Teguh,Medan,Sumatra,41,41,20,15375.00,1,2,2025-11-25,55,55,30,0,4,Low Activity,14,1,3,3,41
+HCP018,Dr. Nathan Davis,Dr. Nathan Davis,Cardiology,RS Semen Padang,Padang,Sumatra,34,34,17,12750.00,2,2,2025-11-15,32,32,22,0,4,Low Activity,11,2,8,3,34
+HCP019,Dr. Olivia Harris,Dr. Olivia Harris,Pulmonology,RS Stella Maris,Makassar,Sulawesi,22,22,10,8250.00,1,1,2025-10-28,19,19,18,0,4,Dormant,6,1,2,3,22
+HCP020,Dr. Michael Lee,Dr. Michael Lee,GP,Puskesmas Bandung Barat,Bandung,Java,11,11,5,2750.00,1,1,2025-10-15,12,12,15,0,4,Dormant,3,1,1,3,11

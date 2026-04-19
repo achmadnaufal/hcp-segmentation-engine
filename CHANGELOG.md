@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2026-04-20
+
+### Added
+- `src/potential_actual_matrix.py` — new module implementing Potential-vs-Actual bubble segmentation. Public API: `compute_potential_actual_matrix()` (classifies every HCP into one of four quadrants — `Star`, `Grow`, `Maintain`, `Monitor` — using a configurable quantile split on potential and actual Rx volume, and emits `potential_norm`, `actual_norm`, `gap_score`, `potential_tier`, `actual_tier`), `summarise_quadrants()` (per-quadrant HCP counts, averages, and cohort percentages in canonical order), and `top_growth_opportunities()` (ranks untapped-demand HCPs by descending positive `gap_score`). Fully immutable; gracefully handles empty DataFrames, single-HCP cohorts, all-zero volumes, NaN values, duplicate HCP IDs, missing specialty columns, and both the `rx_volume_last_12m` and legacy `prescriptions_last_12m` schemas.
+- `src/__init__.py` re-exports the new public API for `from src import compute_potential_actual_matrix, summarise_quadrants, top_growth_opportunities`.
+- `tests/test_potential_actual_matrix.py` — 40 pytest tests across quadrant assignment for all four quadrants, immutability, determinism, empty/single/zero/NaN/duplicate edge cases, fallback-column handling, parametrised split-quantile shifts, summary statistics (counts, percentages, canonical ordering), top-N growth-opportunity ranking, and input-validation guards.
+- `demo/sample_data.csv` extended with new columns (`hcp_name`, `institution`, `rx_volume_last_6m`, `rx_volume_last_12m`, `call_count_ytd`, `last_call_date`, `potential_score`, `engagement_score`) and refreshed with Indonesian/SEA HCP records (Jakarta, Surabaya, Bandung, Medan, Makassar, Denpasar, Padang) across realistic specialties (Cardiology, Oncology, Neurology, Endocrinology, GP, Pulmonology).
+- README sections: "Potential-vs-Actual Matrix (Bubble Segmentation)", "Input Schema Expectations" (consolidated schema reference), and refreshed sample output reflecting the new dataset.
+
 ## [Unreleased] - 2026-04-19
 
 ### Added
