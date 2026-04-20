@@ -1,0 +1,21 @@
+hcp_id,name,specialty,region,prescriptions_last_12m,total_rx_value_usd
+HCP001,Dr. Sarah Mitchell,Cardiology,Northeast,612,183600
+HCP002,Dr. James Okonkwo,Oncology,Northeast,548,219200
+HCP003,Dr. Linda Chen,Diabetes,West,497,124250
+HCP004,Dr. Robert Patel,Cardiology,Southeast,445,111250
+HCP005,Dr. Maria Gonzalez,Endocrinology,West,398,119400
+HCP006,Dr. Thomas Nguyen,Oncology,Midwest,352,140800
+HCP007,Dr. Angela Brooks,Rheumatology,Northeast,301,75250
+HCP008,Dr. Kevin Walsh,Neurology,Southeast,258,77400
+HCP009,Dr. Priya Sharma,Diabetes,West,215,53750
+HCP010,Dr. Carlos Rivera,Primary Care,Southwest,182,27300
+HCP011,Dr. Emily Foster,Cardiology,Northeast,154,46200
+HCP012,Dr. Marcus Johnson,Oncology,West,128,51200
+HCP013,Dr. Rachel Kim,Diabetes,Midwest,102,25500
+HCP014,Dr. Daniel Martinez,Primary Care,Southwest,78,11700
+HCP015,Dr. Sophie Anderson,Neurology,Northeast,54,16200
+HCP016,Dr. Brian Thompson,Primary Care,Southeast,37,5550
+HCP017,Dr. Laura Wilson,Rheumatology,West,22,5500
+HCP018,Dr. Nathan Davis,Dermatology,Midwest,12,1800
+HCP019,Dr. Olivia Harris,Primary Care,Southwest,6,900
+HCP020,Dr. Michael Lee,Psychiatry,Northeast,2,300

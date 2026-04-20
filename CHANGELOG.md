@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2026-04-21
+
+### Added
+- `src/decile_tiering.py` — new decile-based HCP tiering engine mapping Rx volume to 10 deciles and A/B/C/D/E letter tiers (industry-standard pharma convention: deciles 1-2 = A, 3-4 = B, 5-6 = C, 7-8 = D, 9-10 = E). Public API: `DecileTieringEngine` class with `validate()`, `assign_deciles()`, `assign_letter_tiers()`, `summarise()`, and `run()`; plus functional helpers `assign_decile_tiers()` and `letter_distribution()`. Immutable `LetterSummary` and `DecileReport` frozen dataclasses. Handles single-HCP cohorts, duplicate Rx values, NaN values, and custom Rx/ID column names.
+- `tests/test_decile_tiering.py` — 37 pytest tests covering construction, validation, decile assignment (including single-HCP, duplicate-value, and NaN edge cases), letter mapping, per-letter summaries, full pipeline, functional API, and dataclass immutability.
+- `sample_data/decile_tiering_samples.csv` — 20-row realistic sample dataset (cardiology, oncology, diabetes, neurology, endocrinology, rheumatology, dermatology, pulmonology, psychiatry, primary care) spanning the full Rx range from top-tier (612) to near-zero (2).
+- README "Decile-based ABCDE tiering" section with a runnable snippet.
+
 ## [Unreleased] - 2026-04-20
 
 ### Added

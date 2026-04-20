@@ -48,12 +48,13 @@ Requirements: Python 3.9 or newer, pandas, NumPy, scikit-learn, matplotlib, rich
 - **Segment summary** reporting per-segment counts and average composite scores
 - **Specialty and region filtering** for targeted analysis
 - **Full pipeline** from raw data to enriched output in a single method call
+- **Decile-based ABCDE tiering** (`src/decile_tiering.py`) using industry-standard pharma convention: deciles 1-2 = A, 3-4 = B, 5-6 = C, 7-8 = D, 9-10 = E, with per-letter Rx share summaries
 - **Immutable design** -- every operation returns a new DataFrame; inputs are never mutated
 - **Potential-vs-Actual matrix** (bubble segmentation) classifying HCPs into `Star`, `Grow`, `Maintain`, or `Monitor` with a per-HCP `gap_score` to surface untapped-demand targets
 - **RFM scoring** (Recency / Frequency / Monetary) with quintile scores, composite 0-100 score, and `Champion`/`Loyal`/`Casual`/`At Risk`/`Lost` labels
 - **Segment migration analyser** tracking per-HCP upgrades, downgrades, and churn risk across two time periods
 - **Calling-plan allocator** that distributes a fixed annual call budget across HCPs honouring segment priorities and per-HCP min/max caps
-- **227 pytest tests** (100% passing) covering helpers, validation, scoring, tiering, segmentation, filtering, RFM, migration, allocation, bubble segmentation, and edge cases
+- **264 pytest tests** (100% passing) covering helpers, validation, scoring, tiering, segmentation, filtering, RFM, migration, allocation, bubble segmentation, decile tiering, and edge cases
 
 ## Quick Start
 
@@ -108,6 +109,25 @@ print(summary)
 # Filter by specialty or region
 cardiologists = engine.filter_by_specialty(segmented, "Cardiology")
 northeast     = engine.filter_by_region(segmented, "Northeast")
+```
+
+### Decile-based ABCDE tiering
+
+Assign each HCP to a prescribing decile (1 = top, 10 = bottom) and an A/B/C/D/E
+letter tier, then inspect per-letter Rx share -- the standard pharma field-force
+sizing view.
+
+```python
+import pandas as pd
+from src.decile_tiering import DecileTieringEngine
+
+df = pd.read_csv("sample_data/decile_tiering_samples.csv")
+engine = DecileTieringEngine()
+report = engine.run(df)
+
+print(report.data[["hcp_id", "prescriptions_last_12m", "rx_decile", "letter_tier"]])
+print(report.summary_dataframe())
+print(f"Total Rx: {report.total_rx:,.0f} across {report.total_hcps} HCPs")
 ```
 
 ### Custom configuration
